@@ -3,6 +3,7 @@ namespace App\Services\Generator;
 
 use App\Models\Page;
 use App\Models\Website;
+use Markdown;
 
 /**
  * Created by PhpStorm.
@@ -37,6 +38,13 @@ class PageFactory {
 		}
 		return false;
 	}
+
+	public function getActiveHtmlContent()
+    {
+        $content = $this->activePage->content;
+        $content = Markdown::convertToHtml($content);
+        return $content;
+    }
 
 	public function getPageData()
 	{

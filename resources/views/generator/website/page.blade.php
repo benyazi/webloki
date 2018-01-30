@@ -8,7 +8,7 @@
                     <div class="panel-heading">{{$websiteFactory->page->activePage->title}}</div>
 
                     <div class="panel-body">
-                        {!! $websiteFactory->page->activePage->content !!}
+                        {!! $websiteFactory->page->getActiveHtmlContent() !!}
                     </div>
                 </div>
             </div>

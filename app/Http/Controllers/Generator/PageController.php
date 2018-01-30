@@ -31,8 +31,10 @@ class PageController extends Controller
 		if(empty($this->website)) {
 			return redirect()->action('Generator\PageController@notFoundPage', ['pageSlug' => $pageSlug]);
 		}
-		$this->websiteFactory->page->setActivePage($pageSlug);
-		return view('generator.website.page');
+		if($this->websiteFactory->page->setActivePage($pageSlug)) {
+            return view('generator.website.page');
+        }
+        abort(404);
 	}
 
 	public function notFoundPage($pageSlug = self::MAIN_PAGE_SLUG)

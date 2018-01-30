@@ -18,6 +18,8 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('admin-website-edit', require('./components/AdminWebsiteEditComponent.vue'));
 Vue.component('admin-website-add', require('./components/AdminWebsiteAddComponent.vue'));
+Vue.component('admin-website-page-add', require('./components/AdminWebsitePageAddComponent.vue'));
+
 
 const app = new Vue({
     el: '#app'
