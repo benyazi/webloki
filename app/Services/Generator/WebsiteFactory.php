@@ -72,7 +72,7 @@ class WebsiteFactory {
 
 	public function getTemplateName()
 	{
-		return "simple2";
+		return $this->website->template->name;
 	}
 
 	public function getMediaUrl($mediaId)

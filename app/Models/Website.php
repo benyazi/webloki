@@ -35,4 +35,9 @@ class Website extends Model implements HasMedia
 	{
 		return $this->hasMany('App\Models\Service', 'website_id');
 	}
+
+    public function template()
+    {
+        return $this->belongsTo('App\Models\Template', 'template_id');
+    }
 }
