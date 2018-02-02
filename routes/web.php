@@ -21,6 +21,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/website/{websiteId}/page/add/', 'Admin\PageController@add')->name('admin.website.page.add');
     Route::get('/website/{websiteId}/page/list', 'Admin\PageController@index')->name('admin.website.page.list');
     Route::get('/website/{websiteId}/page/edit/{pageId}', 'Admin\PageController@edit')->name('admin.website.page.edit');
+    Route::get('/website/{websiteId}/media/list', 'Admin\MediaController@index')->name('admin.website.media.list');
 });
 Route::get('/', 'Generator\PageController@view')->name('generator.page.main');
 Route::get('/404', 'Generator\PageController@notFoundPage')->name('generator.page.404');

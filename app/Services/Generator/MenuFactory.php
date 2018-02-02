@@ -17,16 +17,22 @@ class MenuFactory {
 		$this->websiteFactory = $websiteFactory;
 	}
 
-	public function render()
+	public function render($config = [])
 	{
-		return view('blocks.menu.simple', [
-			'websiteFactory' => $this->websiteFactory
+		return view('blocks.menu.' . $config['template'], [
+			'websiteFactory' => $this->websiteFactory,
+            'config' => $config
 		]);
 	}
 
 	public function renderLogoBlock()
 	{
-		return $this->websiteFactory->website->name . " logo";
+	    $media = $this->websiteFactory->website->getFirstMedia('logo');
+	    if(empty($media)) {
+            return $this->websiteFactory->website->name;
+        } else {
+	        return '<img src="' . $media->getUrl() . '">';
+        }
 	}
 
 }

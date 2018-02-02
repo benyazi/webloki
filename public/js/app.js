@@ -1100,6 +1100,7 @@ Vue.component('example-component', __webpack_require__(39));
 Vue.component('admin-website-edit', __webpack_require__(42));
 Vue.component('admin-website-add', __webpack_require__(45));
 Vue.component('admin-website-page-add', __webpack_require__(48));
+Vue.component('admin-website-media', __webpack_require__(61));
 
 var app = new Vue({
   el: '#app'
@@ -44128,6 +44129,523 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(62)
+/* template */
+var __vue_template__ = __webpack_require__(63)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/AdminWebsiteMediaComponent.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-54d63048", Component.options)
+  } else {
+    hotAPI.reload("data-v-54d63048", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['websiteId'],
+    data: function data() {
+        return {
+            isLoading: false,
+            activeCollection: 'all',
+            uploadCollection: null,
+            collections: [],
+            website: {
+                id: null,
+                name: null,
+                domain: null,
+                template_id: null
+            },
+            files: [],
+            attachments: [],
+            // Each file will need to be sent as FormData element
+            data: new FormData(),
+            errors: {},
+            percentCompleted: 0
+        };
+    },
+
+    methods: {
+        selectCollection: function selectCollection(collection) {
+            this.activeCollection = collection.name;
+        },
+        getAttachmentSize: function getAttachmentSize() {
+            var _this2 = this;
+
+            this.upload_size = 0; // Reset to beginningƒ
+            this.attachments.map(function (item) {
+                _this2.upload_size += parseInt(item.size);
+            });
+
+            this.upload_size = Number(this.upload_size.toFixed(1));
+            this.$forceUpdate();
+        },
+        prepareFields: function prepareFields() {
+
+            if (this.attachments.length > 0) {
+                for (var i = 0; i < this.attachments.length; i++) {
+                    var attachment = this.attachments[i];
+                    this.data.append('attachments[]', attachment);
+                }
+            }
+            this.data.append('collection', this.uploadCollection);
+        },
+        removeAttachment: function removeAttachment(attachment) {
+
+            this.attachments.splice(this.attachments.indexOf(attachment), 1);
+
+            this.getAttachmentSize();
+        },
+
+        // This function will be called every time you add a file
+        uploadFieldChange: function uploadFieldChange(e) {
+            var files = e.target.files || e.dataTransfer.files;
+            if (!files.length) return;
+            for (var i = files.length - 1; i >= 0; i--) {
+                this.attachments.push(files[i]);
+            }
+            // Reset the form to avoid copying these files multiple times into this.attachments
+            document.getElementById("attachments").value = [];
+        },
+        submit: function submit() {
+            this.prepareFields();
+            var _this = this;
+            var config = {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                onUploadProgress: function (progressEvent) {
+                    this.percentCompleted = Math.round(progressEvent.loaded * 100 / progressEvent.total);
+                    this.$forceUpdate();
+                }.bind(this)
+            };
+            // Make HTTP request to store announcement
+            axios.post('/api/media/' + this.websiteId + '/upload', this.data, config).then(function (response) {
+                console.log(response);
+                if (response.data.success) {
+                    console.log('Successfull Upload');
+                    _this.files = response.data.files;
+                    this.resetData();
+                } else {
+                    console.log('Unsuccessful Upload');
+                    this.errors = response.data.errors;
+                }
+            }.bind(this)) // Make sure we bind Vue Component object to this funtion so we get a handle of it in order to call its other methods
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        // We want to clear the FormData object on every upload so we can re-calculate new files again.
+        // Keep in mind that we can delete files as well so in the future we will need to keep track of that as well
+        resetData: function resetData() {
+            this.data = new FormData(); // Reset it completely
+            this.attachments = [];
+        },
+        start: function start() {
+            console.log('Starting File Management Component');
+        },
+        getList: function getList() {
+            var _this = this;
+            return _this.files.filter(function (item) {
+                if (_this.activeCollection === item.collection || _this.activeCollection === 'all') {
+                    return true;
+                } else {
+                    return false;
+                };
+            });
+        },
+
+
+        save: function save() {
+            var _this = this;
+            _this.isLoading = true;
+            if (_this.isEditing) {
+                axios.put('/api/page/', { page: _this.page }).then(function (r) {
+                    if (r.data.success) {
+                        alert('success');
+                    } else {
+                        alert('error');
+                    }
+                    _this.isLoading = false;
+                }).catch(function (e) {
+                    alert('fail');
+                    _this.isLoading = false;
+                });
+            } else {
+                _this.page.website_id = _this.websiteId;
+                axios.post('/api/page/', { page: _this.page }).then(function (r) {
+                    if (r.data.success) {
+                        alert('success');
+                        location.href = r.data.redirectUrl;
+                    } else {
+                        alert('error');
+                    }
+                    _this.isLoading = false;
+                }).catch(function (e) {
+                    alert('fail');
+                    _this.isLoading = false;
+                });
+            }
+        }
+    },
+    created: function created() {
+        var _this = this;
+        axios.get('/api/website/get/' + _this.websiteId).then(function (res) {
+            _this.website = res.data.website;
+        });
+        axios.get('/api/media/' + _this.websiteId).then(function (res) {
+            _this.files = res.data.files;
+            _this.collections = res.data.collections;
+            _this.uploadCollection = _this.collections[1].name;
+        });
+        _this.start();
+    },
+    mounted: function mounted() {}
+});
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container mediaLibrary" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-8 col-md-offset-2" }, [
+        _c("div", { staticClass: "panel panel-default" }, [
+          _c("div", { staticClass: "panel-heading" }, [
+            _vm._v(
+              "\n                    Media files list for website " +
+                _vm._s(_vm.website.domain) +
+                "\n                "
+            )
+          ]),
+          _vm._v(" "),
+          _vm.isLoading
+            ? _c("div", { staticClass: "panel-body" }, [
+                _vm._v(
+                  "\n                    Идет обработка данных...пиу-пиу\n                "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.isLoading
+            ? _c("div", { staticClass: "panel-body" }, [
+                _c("div", { staticClass: "mediaCollections" }, [
+                  _c(
+                    "ul",
+                    { staticClass: "nav nav-pills" },
+                    _vm._l(_vm.collections, function(collection) {
+                      return _c(
+                        "li",
+                        {
+                          class: {
+                            active: _vm.activeCollection === collection.name
+                          },
+                          attrs: { role: "presentation" }
+                        },
+                        [
+                          _c(
+                            "a",
+                            {
+                              on: {
+                                click: function($event) {
+                                  _vm.selectCollection(collection)
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                    " +
+                                  _vm._s(collection.name) +
+                                  "\n                                "
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "row mediaList" },
+                  _vm._l(_vm.getList(), function(item) {
+                    return _c(
+                      "div",
+                      { staticClass: "col-xs-4 mediaList_item" },
+                      [
+                        _c("div", [_vm._v("ID: " + _vm._s(item.id))]),
+                        _vm._v(" "),
+                        _c("div", [
+                          _vm._v("Collection: " + _vm._s(item.collection))
+                        ]),
+                        _vm._v(" "),
+                        _c("img", { attrs: { src: item.thumb } })
+                      ]
+                    )
+                  })
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "panel-footer" }, [
+            _c("div", { staticClass: "mediaUploader" }, [
+              _c("div", { staticClass: "form-group col-md-12" }, [
+                _vm._m(0, false, false),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-12" }, [
+                  _c("input", {
+                    attrs: {
+                      type: "file",
+                      multiple: "multiple",
+                      id: "attachments"
+                    },
+                    on: { change: _vm.uploadFieldChange }
+                  }),
+                  _vm._v(" "),
+                  _c("hr"),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "col-md-12" },
+                    _vm._l(_vm.attachments, function(attachment, index) {
+                      return _c(
+                        "div",
+                        { staticClass: "attachment-holder animated fadeIn" },
+                        [
+                          _c("span", { staticClass: "label label-primary" }, [
+                            _vm._v(
+                              _vm._s(
+                                attachment.name +
+                                  " (" +
+                                  Number(
+                                    (attachment.size / 1024 / 1024).toFixed(1)
+                                  ) +
+                                  "MB)"
+                              )
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "span",
+                            {
+                              staticStyle: {
+                                background: "red",
+                                cursor: "pointer"
+                              },
+                              on: {
+                                click: function($event) {
+                                  _vm.removeAttachment(attachment)
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "button",
+                                { staticClass: "btn btn-xs btn-danger" },
+                                [_vm._v("Remove")]
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.uploadCollection,
+                            expression: "uploadCollection"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        staticStyle: { width: "100%" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.uploadCollection = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      _vm._l(_vm.collections, function(col) {
+                        return _c("option", { domProps: { value: col.name } }, [
+                          _vm._v(_vm._s(col.name))
+                        ])
+                      })
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-xs-6" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        on: { click: _vm.submit }
+                      },
+                      [_vm._v("Upload files")]
+                    )
+                  ])
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [_c("h3", [_vm._v("Uploading new attachments")])])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-54d63048", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

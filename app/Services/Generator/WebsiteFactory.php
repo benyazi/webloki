@@ -3,6 +3,7 @@ namespace App\Services\Generator;
 
 use App\Models\Website;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\Media;
 
 /**
  * Created by PhpStorm.
@@ -64,13 +65,79 @@ class WebsiteFactory {
 
 	public function renderWebsiteTitle()
 	{
-		return $this->website->name;
+	    $title = $this->website->name;
+	    $title .= ' - ' . $this->page->activePage->title;
+		return $title;
 	}
 
 	public function getTemplateName()
 	{
-		return "simple";
+		return "simple2";
 	}
+
+	public function getMediaUrl($mediaId)
+    {
+        $media = Media::find($mediaId);
+        if(empty($media)) {
+            return '/nofound.jpg';
+        }
+        return $media->getUrl();
+    }
+
+	public function getMediaUrlFirstFromCollection($collection)
+    {
+        $media = $this->website->getFirstMedia($collection);
+        if(empty($media)) {
+            return '/nofound.jpg';
+        }
+        return $media->getUrl();
+    }
+
+    public function getRandomImages()
+    {
+        $files = Media::query()
+            ->where('model_type', Website::class)
+            ->where('model_id', $this->website->id)
+            ->limit(6)
+            ->orderBy('id','desc')
+            ->get();
+        return $files;
+    }
+
+    public function getServices()
+    {
+        return $this->website->services()->get();
+    }
+
+    public function getMainServices($limit = null)
+    {
+        return $this->website->services()
+            ->where('is_main', true)
+            ->limit($limit)
+            ->get();
+    }
+
+	public function getMediaFiles()
+    {
+        $files = [];
+        $mediaFiles = Media::query()
+            ->where('model_type', Website::class)
+            ->where('model_id', $this->website->id)
+            ->get();
+        foreach ($mediaFiles as $media) {
+            $files[] = [
+                'id' => $media->id,
+                'name' => $media->name,
+                'collection' => $media->collection_name,
+                'thumb' => $media->getUrl()
+            ];
+        }
+        return $files;
+    }
+
+	public function getAssertPath() {
+	    return '/asserts/' . $this->getTemplateName() . '/';
+    }
 
 	public function renderWidgetBlock($blockName)
 	{

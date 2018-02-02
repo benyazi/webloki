@@ -8350,3 +8350,20 @@ button.close {
   }
 }
 
+.mediaList .mediaList_item {
+  height: 200px;
+  overflow: hidden;
+}
+
+.mediaList .mediaList_item img {
+  width: 100%;
+}
+
+.mediaLibrary .panel-footer {
+  overflow: auto;
+}
+
+.mediaLibrary .mediaCollections {
+  margin-bottom: 15px;
+}
+

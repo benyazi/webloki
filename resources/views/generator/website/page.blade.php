@@ -1,4 +1,4 @@
-@extends('layouts.templates.'.$websiteFactory->getTemplateName())
+@extends('layouts.templates.' . $websiteFactory->getTemplateName() . '.index')
 
 @section('content')
     <div class="container">

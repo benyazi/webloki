@@ -21,6 +21,9 @@ Route::post('/page/','Api\PageController@add')->name('api.page.add');
 Route::put('/page/','Api\PageController@update')->name('api.page.update');
 Route::delete('/page/','Api\PageController@delete')->name('api.page.delete');
 
+Route::get('/media/{websiteId}','Api\MediaController@get')->name('api.media.get');
+Route::post('/media/{websiteId}/upload','Api\MediaController@upload')->name('api.media.upload');
+
 Route::get('/website/get/{websiteId}', 'Admin\ApiWebsiteController@get')->name('api.admin.website.edit');
 Route::post('/website/save/{websiteId}', 'Admin\ApiWebsiteController@save')->name('api.admin.website.save');
 Route::post('/website/add/', 'Admin\ApiWebsiteController@add')->name('api.admin.website.add');

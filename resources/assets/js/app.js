@@ -19,6 +19,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 Vue.component('admin-website-edit', require('./components/AdminWebsiteEditComponent.vue'));
 Vue.component('admin-website-add', require('./components/AdminWebsiteAddComponent.vue'));
 Vue.component('admin-website-page-add', require('./components/AdminWebsitePageAddComponent.vue'));
+Vue.component('admin-website-media', require('./components/AdminWebsiteMediaComponent.vue'));
 
 
 const app = new Vue({
